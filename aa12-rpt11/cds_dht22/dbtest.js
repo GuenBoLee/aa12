@@ -1,6 +1,6 @@
 // dbtest.js
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/test33", {
+mongoose.connect("mongodb://127.0.0.1/test33", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

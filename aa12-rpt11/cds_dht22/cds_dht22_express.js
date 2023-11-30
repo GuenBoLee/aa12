@@ -1,7 +1,9 @@
 // cds_dht22_express.js  
 // Express
 var express = require("express");
+var cors = require("cors");
 var app = express();
+app.use(cors());
 var web_port = 3030;  // express port
 
 // MongoDB
@@ -42,6 +44,6 @@ app.get('/iot/:id', function (req, res) {
 });
 
 // Express WEB
-app.use(express.static(__dirname + ));  // WEB root folder -> public
-app.listen();  // port 3030
+app.use(express.static(__dirname + "/public"));  // WEB root folder -> public
+app.listen(web_port);  // port 3030
 console.log("Express_IOT is running at port:3030");

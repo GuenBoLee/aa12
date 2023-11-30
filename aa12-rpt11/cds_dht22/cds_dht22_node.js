@@ -50,7 +50,7 @@ parser.on("data", (data) => {
     mdata[1] = temp; // temperature data
     mdata[2] = humi; // humidity data
     mdata[3] = lux; // luminosity data
-    console.log("AAnn," + mdata);
+    console.log("AA12," + mdata);
     io.sockets.emit("message", mdata); // send data to all clients
   } else {
     // error

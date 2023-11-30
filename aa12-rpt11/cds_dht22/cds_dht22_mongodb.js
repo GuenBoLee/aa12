@@ -10,10 +10,8 @@ var io = require('socket.io').listen(port);
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/', {  // DB name!!
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }); 
+mongoose.connect('mongodb://127.0.0.1:27017/iot');  // DB name!!
+   
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -21,14 +19,15 @@ db.once('open', function callback () {
     console.log("mongo db connection OK.");
 });
 // Schema
-var  = new Schema({
-    
-
-
+var iotSchema = new Schema({
+    date: String,
+    temperature: String,
+    humidity: String,
+    luminosity: String
 });
 // Display data on console in the case of saving data.
 iotSchema.methods.info = function () {
-    var iotInfo = 
+    var iotInfo = this.date
     ? "Current date: " + this.date +", Temp: " + this.temperature 
     + ", Humi: " + this.humidity + ", Lux: " + this.luminosity 
     : "I don't have a date"
@@ -60,7 +59,7 @@ var lux ='';
 var mdata =[]; // this array stores date and data from multiple sensors
 var firstcommaidx = 0;
 
-var Sensor = mongoose.model("Sensor", );  // sensor data model
+var Sensor = mongoose.model("Sensor", iotSchema);  // sensor data model
 
 parser.on('data', function (data) { // call back when data is received
     readData = data.toString(); // append data to buffer
@@ -68,8 +67,8 @@ parser.on('data', function (data) { // call back when data is received
 
     // parsing data into signals
     if (readData.lastIndexOf(',') > firstcommaidx && firstcommaidx > 0) {
-        temp = readData.substring(firstcommaidx + 1, readData.indexOf(',',firstcommaidx+1));
-        humi = readData.substring(readData.indexOf(',',firstcommaidx+1) + 1, readData.lastIndexOf(','));
+        temp = readData.substring(0, firstcommaidx);
+        humi = readData.substring(firstcommaidx +1, readData.indexOf(",",firstcommaidx+1));
         lux = readData.substring(readData.lastIndexOf(',')+1);
         
         readData = '';
@@ -80,7 +79,7 @@ parser.on('data', function (data) { // call back when data is received
         mdata[2]=humi;  // humidity data
         mdata[3]=lux;   // luminosity data
         //console.log(mdata);
-        var iot = new ({date:dStr, temperature:temp, humidity:humi, luminosity:lux});
+        var iot = new Sensor ({date: dStr, temperature: temp, humidity: humi, luminosity: lux});
         // save iot data (document) to MongoDB
         iot.save(function(err, iot) {
             if(err) return handleEvent(err);
